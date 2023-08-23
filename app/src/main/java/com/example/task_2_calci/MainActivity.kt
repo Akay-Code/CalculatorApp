@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-
+    // initialized working string and result string gloabally
     lateinit var workingText: TextView
     lateinit var resultText: TextView
 
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         resultText = findViewById(R.id.result_view)
     }
 
-    //bools
+    //bools for checking whether operator and decimal can be added or not
     var canAdd = false
     var canDecimal = true
 
@@ -32,11 +32,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun allClearAction(view: View) {
+        //resets both working and result string
         workingText.text = ""
         resultText.text = ""
     }
 
     fun numberAction(view: View) {
+
+        //appends working string with digits and decimal point
         if(view is Button){
             if(view.text == "."){
                 if(canDecimal){
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun operatorAction(view: View) {
 
+        //appends working string with operators
         if(view is Button && canAdd){
             workingText.append(view.text)
             canAdd = false
@@ -71,9 +75,11 @@ class MainActivity : AppCompatActivity() {
 
         // going according to Bodmas , division and multiplication first
 
+        //performing division and multiplication first
         val divisionAndMultiplication = divisionAndMultiplicationCalculate(digitsAndOperators)
         if(divisionAndMultiplication.isEmpty()) return ""
 
+        //later performing addition and subtraction
         val result = addAndSubCalculate(divisionAndMultiplication)
         return result.toString()
     }
@@ -81,6 +87,7 @@ class MainActivity : AppCompatActivity() {
     private fun addAndSubCalculate(passList: MutableList<Any>): Float {
         var result = passList[0] as Float
 
+        //adding or subtracting numbers 
         for(i in passList.indices){
 
             if(passList[i] is Char && i != passList.lastIndex){
@@ -102,6 +109,7 @@ class MainActivity : AppCompatActivity() {
     private fun divisionAndMultiplicationCalculate(passedList: MutableList<Any>): MutableList<Any> {
         var list = passedList
 
+        // multiplying or dvidinng two numbers before and after operator
         while(list.contains('x') || list.contains('/')){
 
             val newList = mutableListOf<Any>()
@@ -138,6 +146,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun digitsOperator(): MutableList<Any>{
+
+        //changing the string to LIST having values and operators
+        //for example if string = 12*55-3/4 , then elements in LIST will be as list = [12 , * , 55 , - , 3 , / 4]
         val list = mutableListOf<Any>()
         var currentDigit = ""
         for(character in workingText.text){
